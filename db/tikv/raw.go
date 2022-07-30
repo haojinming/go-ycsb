@@ -15,6 +15,7 @@ package tikv
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -172,7 +173,10 @@ func (db *rawDB) Insert(ctx context.Context, table string, key string, values ma
 		return err
 	}
 
-	return db.db.Put(ctx, db.getRowKey(table, key), buf)
+	rowKey := db.getRowKey(table, key)
+	fmt.Printf("HJM_YCSB insert key:%s, value:%s.\n", strings.ToUpper(hex.EncodeToString(rowKey)),
+		strings.ToUpper(hex.EncodeToString(buf)))
+	return db.db.Put(ctx, rowKey, buf)
 }
 
 func (db *rawDB) BatchInsert(ctx context.Context, table string, keys []string, values []map[string][]byte) error {
